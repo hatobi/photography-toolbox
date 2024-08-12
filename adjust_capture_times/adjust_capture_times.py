@@ -7,9 +7,16 @@ from datetime import datetime, timedelta
 from PIL import Image
 from PIL.ExifTags import TAGS
 
-# Generate a timestamped log filename
+# Define the _logs directory path
+logs_dir = os.path.join(os.path.dirname(__file__), '_logs')
+
+# Create the directory if it does not exist
+if not os.path.exists(logs_dir):
+    os.makedirs(logs_dir)
+
+# Generate a timestamped log filename inside _logs directory
 timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-log_filename = f'adjust_capture_times_{timestamp}.log'
+log_filename = os.path.join(logs_dir, f'adjust_capture_times_{timestamp}.log')
 
 # Set up logging
 logging.basicConfig(filename=log_filename, level=logging.INFO, 
