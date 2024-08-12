@@ -1,6 +1,7 @@
 import os
 import csv
 import logging
+import time
 import subprocess
 from datetime import datetime, timedelta
 from PIL import Image
