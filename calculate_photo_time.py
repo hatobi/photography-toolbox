@@ -1,6 +1,9 @@
 # Created using ChatGPT
 
-# Place script in the same folder as the pictures you want to analyse. 
+# Place script in the same folder as the pictures you want to analyse 
+# or run on custom folder path.
+
+# Processes all images in the specified folder and its subfolders.
 
 # Depending on the number of images, the first run may take some time, 
 # though by writing the extracted metadata to a database, 
@@ -35,15 +38,21 @@ def populate_database(folder_path, db_path):
     """Populate the database with image timestamps if not already present."""
     conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
-    files = [f for f in os.listdir(folder_path) if f.lower().endswith(('nef', 'jpg', 'jpeg', 'png'))]
+    
+    files = []
+    for root, _, filenames in os.walk(folder_path):
+        for f in filenames:
+            if f.lower().endswith(('nef', 'jpg', 'jpeg', 'png')):
+                files.append(os.path.join(root, f))
+    
     total_files = len(files)
     
-    for i, filename in enumerate(files):
+    for i, file_path in enumerate(files):
+        filename = os.path.relpath(file_path, folder_path)  # Store relative path to avoid conflicts
         cursor.execute("SELECT timestamp FROM image_timestamps WHERE filename = ?", (filename,))
         result = cursor.fetchone()
         if result is None:
             print(f"Processing image {i + 1} of {total_files}")
-            file_path = os.path.join(folder_path, filename)
             date_taken = get_exif_date_taken(file_path)
             if date_taken:
                 cursor.execute("INSERT INTO image_timestamps (filename, timestamp) VALUES (?, ?)",
@@ -100,15 +109,36 @@ def save_results_to_file(folder_path, num_photos, total_duration, break_duration
             file.write(f"Break from {start} to {end}, duration: {end - start}\n")
     print(f"Results saved to {result_file_path}")
 
-# Use the current directory as the folder path
-folder_path = os.getcwd()
-db_path = os.path.join(folder_path, '_image_timestamps.db')
+# Get the folder path from the user
+while True:
+    choice = input("Do you want to run the script on the current path or a custom path? (current/custom): ").strip().lower()
+    if choice in ['current', 'custom']:
+        break
+    else:
+        print("Invalid choice. Please enter 'current' or 'custom'.")
+
+if choice == 'current':
+    folder_path = os.getcwd()
+else:
+    while True:
+        folder_path = input("Please enter the custom path: ").strip()
+        if os.path.isdir(folder_path):
+            break
+        else:
+            print("Invalid folder path. Please enter a valid path.")
+
+db_path = os.path.join(folder_path, 'image_timestamps.db')
 
 # Initialize and populate the database if necessary
 initialize_database(db_path)
 
 # Get the current number of files and the number of database entries
-current_files = [f for f in os.listdir(folder_path) if f.lower().endswith(('nef', 'jpg', 'jpeg', 'png'))]
+current_files = []
+for root, _, filenames in os.walk(folder_path):
+    for f in filenames:
+        if f.lower().endswith(('nef', 'jpg', 'jpeg', 'png')):
+            current_files.append(os.path.join(root, f))
+
 conn = sqlite3.connect(db_path)
 cursor = conn.cursor()
 cursor.execute("SELECT COUNT(*) FROM image_timestamps")
