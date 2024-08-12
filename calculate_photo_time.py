@@ -96,8 +96,13 @@ def calculate_photographing_time(timestamps, break_duration_minutes=10):
 
 def save_results_to_file(folder_path, num_photos, total_duration, break_duration, photographing_time, breaks, start_time, end_time):
     """Save the results to a text file."""
+    main_folder_name = os.path.basename(folder_path.rstrip(os.sep))
+    run_timestamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     result_file_path = os.path.join(folder_path, f"_photographing_time_report_{break_duration}min.txt")
     with open(result_file_path, 'w') as file:
+        file.write(f"Folder processed: {folder_path}\n")
+        file.write(f"Main folder name: {main_folder_name}\n")
+        file.write(f"Script run timestamp: {run_timestamp}\n\n")
         file.write(f"Number of photos processed: {num_photos}\n")
         file.write(f"Total duration (first to last photo): {total_duration}\n")
         file.write(f"TimeS: {start_time}\n")
@@ -127,7 +132,7 @@ else:
         else:
             print("Invalid folder path. Please enter a valid path.")
 
-db_path = os.path.join(folder_path, 'image_timestamps.db')
+db_path = os.path.join(folder_path, '_image_timestamps.db')
 
 # Initialize and populate the database if necessary
 initialize_database(db_path)
