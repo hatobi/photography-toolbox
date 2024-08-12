@@ -2,6 +2,7 @@ import os
 import csv
 import logging
 import time
+import sqlite3
 import subprocess
 from datetime import datetime, timedelta
 from PIL import Image
