@@ -41,6 +41,9 @@ def populate_database(folder_path, db_path):
     
     files = []
     for root, _, filenames in os.walk(folder_path):
+        if "_ignore" in root:
+            print(f"Ignoring images in folder: {root}")
+            continue  # Skip this directory
         for f in filenames:
             if f.lower().endswith(('nef', 'jpg', 'jpeg', 'png')):
                 files.append(os.path.join(root, f))
@@ -140,6 +143,9 @@ initialize_database(db_path)
 # Get the current number of files and the number of database entries
 current_files = []
 for root, _, filenames in os.walk(folder_path):
+    if "_ignore" in root:
+        print(f"Ignoring images in folder: {root}")
+        continue  # Skip this directory
     for f in filenames:
         if f.lower().endswith(('nef', 'jpg', 'jpeg', 'png')):
             current_files.append(os.path.join(root, f))
