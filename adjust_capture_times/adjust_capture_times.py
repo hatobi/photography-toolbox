@@ -85,6 +85,10 @@ def process_image(image_path, offset):
 
 def process_folder(folder_path, offsets):
     """Process all images in a folder and subfolders, skipping files in '_ignore' directories."""
+    total_files = sum([len(files) for _, _, files in os.walk(folder_path)])
+    processed_files = 0
+    start_time = time.time()
+
     for root, dirs, files in os.walk(folder_path):
         # Skip processing if the '_ignore' folder is in the path
         if '_ignore' in root.split(os.path.sep):
@@ -102,10 +106,22 @@ def process_folder(folder_path, offsets):
                     serial_number = str(serial_number).strip()  # Convert to string and strip spaces
                     if serial_number in offsets:
                         process_image(image_path, offsets[serial_number])
+                        processed_files += 1
                     else:
                         logging.warning(f"No offset provided for serial number {serial_number} in {image_path}")
                 else:
                     logging.warning(f"No serial number found in EXIF for {image_path}")
+
+                # Calculate elapsed time and estimate remaining time
+                elapsed_time = time.time() - start_time
+                estimated_total_time = (elapsed_time / processed_files) * total_files if processed_files > 0 else 0
+                remaining_time = estimated_total_time - elapsed_time
+                remaining_time_str = str(timedelta(seconds=int(remaining_time))).split('.')[0]  # Format as HH:MM:SS
+
+                # Print progress
+                print(f"\r[{str(timedelta(seconds=int(elapsed_time)))}] {processed_files}/{total_files} files processed - Estimated time remaining: {remaining_time_str}", end='')
+
+    print()  # New line after progress completion
 
 def parse_offsets(offset_file):
     """Parse the CSV or text file for time offsets."""
