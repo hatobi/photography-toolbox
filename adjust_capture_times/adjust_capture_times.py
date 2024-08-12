@@ -10,14 +10,14 @@ from PIL.ExifTags import TAGS
 timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
 log_filename = f'adjust_capture_times_{timestamp}.log'
 
-# Setup logging
+# Set up logging
 logging.basicConfig(filename=log_filename, level=logging.INFO, 
                     format='%(asctime)s - %(levelname)s - %(message)s')
-console = logging.StreamHandler()
-console.setLevel(logging.INFO)
-formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
-console.setFormatter(formatter)
-logging.getLogger().addHandler(console)
+# console = logging.StreamHandler()
+# console.setLevel(logging.INFO)
+# formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+# console.setFormatter(formatter)
+# logging.getLogger().addHandler(console)
 
 def get_exif(image_path):
     """Extract EXIF data from an image using exiftool for NEF files and PIL for others."""
