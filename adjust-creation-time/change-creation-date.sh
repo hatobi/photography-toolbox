@@ -1,0 +1,1 @@
+find /path-to-folder/ \(  -type f -exec touch -t 202307281245 {} \; \) -o \( -type d -exec touch -t 202307281245 {} \; \)
