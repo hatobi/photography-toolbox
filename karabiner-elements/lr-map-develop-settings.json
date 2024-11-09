@@ -1,0 +1,41 @@
+{
+    "description": "Map ö (semicolon) to Shift + Command + C and ä (quote) to Shift + Command + V in Lightroom Classic",
+    "manipulators": [
+        {
+            "conditions": [
+                {
+                    "bundle_identifiers": [
+                        "^com.adobe.LightroomClassicCC7$"
+                    ],
+                    "type": "frontmost_application_if"
+                }
+            ],
+            "from": { "key_code": "semicolon" },
+            "to": [
+                {
+                    "key_code": "c",
+                    "modifiers": ["left_command", "left_shift"]
+                }
+            ],
+            "type": "basic"
+        },
+        {
+            "conditions": [
+                {
+                    "bundle_identifiers": [
+                        "^com.adobe.LightroomClassicCC7$"
+                    ],
+                    "type": "frontmost_application_if"
+                }
+            ],
+            "from": { "key_code": "quote" },
+            "to": [
+                {
+                    "key_code": "v",
+                    "modifiers": ["left_command", "left_shift"]
+                }
+            ],
+            "type": "basic"
+        }
+    ]
+}
