@@ -1,0 +1,14 @@
+{
+    "description": "Replace dashes with spaces in clipboard",
+    "enabled": false,
+    "manipulators": [
+        {
+            "from": {
+                "key_code": "c",
+                "modifiers": { "mandatory": ["control", "command"] }
+            },
+            "to": [{ "shell_command": "replace_dashes.sh" }],
+            "type": "basic"
+        }
+    ]
+}
